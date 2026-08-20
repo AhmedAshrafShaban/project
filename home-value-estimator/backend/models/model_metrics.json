@@ -1,0 +1,12 @@
+{
+  "model_name": "RandomForest",
+  "model_version": "0.1.0",
+  "mae": 29498.57181313068,
+  "rmse": 41958.66965983589,
+  "r2": 0.9345144837306593,
+  "cv_r2_mean": 0.9396683291465232,
+  "cv_r2_std": 0.00177204156630099,
+  "n_train_rows": 6389,
+  "n_test_rows": 1598,
+  "log_target_helped": false
+}

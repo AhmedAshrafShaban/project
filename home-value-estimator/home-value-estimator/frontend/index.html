@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="api-base-url" content="http://localhost:8000/api" />
+<title>Estimator — home value drafting tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="grid-backdrop" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="wordmark">
+    <span class="wordmark-mark">△</span>
+    <span class="wordmark-text">Estimator</span>
+  </div>
+  <div class="topbar-meta" id="model-meta">calibrating model…</div>
+</header>
+
+<main class="drafting-table">
+
+  <section class="sheet form-sheet" aria-labelledby="survey-title">
+    <div class="sheet-label">
+      <span class="sheet-index">01</span>
+      <h1 id="survey-title">Site survey</h1>
+    </div>
+    <p class="sheet-hint">Enter the property details below. The estimate updates on the right as an annotated blueprint.</p>
+
+    <form id="estimate-form" novalidate>
+      <div class="field">
+        <label for="neighborhood">Neighborhood</label>
+        <select id="neighborhood" name="neighborhood" required></select>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="sqft_living">Living area (sqft)</label>
+          <input type="number" id="sqft_living" name="sqft_living" min="150" max="20000" value="1850" required />
+        </div>
+        <div class="field">
+          <label for="lot_size_sqft">Lot size (sqft)</label>
+          <input type="number" id="lot_size_sqft" name="lot_size_sqft" min="0" max="500000" value="5500" required />
+        </div>
+      </div>
+
+      <div class="field-row field-row-3">
+        <div class="field">
+          <label for="bedrooms">Bedrooms</label>
+          <input type="number" id="bedrooms" name="bedrooms" min="0" max="15" value="3" required />
+        </div>
+        <div class="field">
+          <label for="bathrooms">Bathrooms</label>
+          <input type="number" step="0.5" id="bathrooms" name="bathrooms" min="0" max="10" value="2" required />
+        </div>
+        <div class="field">
+          <label for="floors">Floors</label>
+          <input type="number" step="0.5" id="floors" name="floors" min="1" max="5" value="2" required />
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="year_built">Year built</label>
+          <input type="number" id="year_built" name="year_built" min="1850" max="2026" value="2005" required />
+        </div>
+        <div class="field">
+          <label for="condition">Condition <span class="field-scale">1–5</span></label>
+          <input type="number" id="condition" name="condition" min="1" max="5" value="4" required />
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="grade">Construction grade <span class="field-scale">1–10</span></label>
+          <input type="number" id="grade" name="grade" min="1" max="10" value="7" required />
+        </div>
+        <div class="field">
+          <label for="school_score">School score <span class="field-scale">1–10</span></label>
+          <input type="number" step="0.1" id="school_score" name="school_score" min="1" max="10" value="7" required />
+        </div>
+      </div>
+
+      <fieldset class="toggles">
+        <legend>Features</legend>
+        <label class="toggle"><input type="checkbox" id="renovated" name="renovated" /> Renovated</label>
+        <label class="toggle"><input type="checkbox" id="garage" name="garage" checked /> Garage</label>
+        <label class="toggle"><input type="checkbox" id="basement" name="basement" /> Basement</label>
+        <label class="toggle"><input type="checkbox" id="pool" name="pool" /> Pool</label>
+      </fieldset>
+
+      <div class="form-errors" id="form-errors" role="alert" aria-live="polite"></div>
+
+      <button type="submit" class="draft-button" id="draft-button">
+        Draft the estimate
+      </button>
+    </form>
+  </section>
+
+  <section class="sheet result-sheet" aria-labelledby="result-title">
+    <div class="sheet-label">
+      <span class="sheet-index">02</span>
+      <h1 id="result-title">Blueprint</h1>
+    </div>
+
+    <div class="blueprint-frame">
+      <svg id="house-svg" viewBox="0 0 400 260" role="img" aria-label="Line drawing of a house that annotates with the estimate">
+        <g id="house-lines" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+          <polyline points="40,150 40,240 360,240 360,150" />
+          <polyline points="20,150 200,50 380,150" />
+          <line x1="200" y1="50" x2="200" y2="20" />
+          <line x1="188" y1="20" x2="212" y2="20" />
+          <rect x="180" y="175" width="40" height="65" />
+          <rect x="70" y="170" width="45" height="45" />
+          <line x1="92.5" y1="170" x2="92.5" y2="215" />
+          <line x1="70" y1="192.5" x2="115" y2="192.5" />
+          <rect x="285" y="170" width="45" height="45" />
+          <line x1="307.5" y1="170" x2="307.5" y2="215" />
+          <line x1="285" y1="192.5" x2="330" y2="192.5" />
+        </g>
+        <g id="callouts" class="callouts" opacity="0">
+          <line x1="115" y1="192" x2="150" y2="130" stroke-dasharray="2 3" />
+          <text x="152" y="126" class="callout-text" id="callout-area"></text>
+          <line x1="360" y1="195" x2="392" y2="195" stroke-dasharray="2 3" />
+          <text x="256" y="199" class="callout-text callout-text-right" id="callout-grade"></text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="result-panel" id="result-panel">
+      <p class="result-placeholder" id="result-placeholder">Fill in the survey and draft an estimate to see it here.</p>
+
+      <div class="result-content" id="result-content" hidden>
+        <div class="result-value-row">
+          <span class="result-label">Estimated value</span>
+          <span class="result-value" id="result-value">$0</span>
+        </div>
+        <div class="result-range">
+          <span id="result-low">$0</span>
+          <div class="range-bar"><div class="range-bar-fill"></div></div>
+          <span id="result-high">$0</span>
+        </div>
+
+        <div class="factors" id="factors" aria-label="Top factors driving this estimate"></div>
+
+        <p class="result-footnote" id="result-footnote"></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="page-footer">
+  <span>Estimates are generated by a model trained on synthetic data for demonstration — not a real appraisal.</span>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
